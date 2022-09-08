@@ -30,7 +30,7 @@ mod problem_704 {
     #[cfg(test)]
     mod tests {
         #[test]
-        fn test_bin_search_not_found() {
+        fn bin_search_not_found() {
             let nums = vec![-1, 0, 3, 5, 9, 12];
             let target = 2;
 
@@ -41,7 +41,7 @@ mod problem_704 {
         }
 
         #[test]
-        fn test_bin_search_all() {
+        fn bin_search_all() {
             let nums = vec![-1, 0, 3, 5, 9, 12, 20, 42, 100];
             for i in 0..(nums.len() - 1) {
                 let target = nums[i];
@@ -53,7 +53,7 @@ mod problem_704 {
         }
 
         #[test]
-        fn test_regression() {
+        fn regression() {
             let nums = vec![5];
             let target = -5;
 
@@ -194,7 +194,7 @@ mod problem_35 {
     #[cfg(test)]
     mod tests {
         #[test]
-        fn test_example_1() {
+        fn example_1() {
             let nums = vec![1, 3, 5, 6];
             let target = 5;
 
@@ -205,7 +205,7 @@ mod problem_35 {
         }
 
         #[test]
-        fn test_example_2() {
+        fn example_2() {
             let nums = vec![1, 3, 5, 6];
             let target = 2;
 
@@ -216,7 +216,7 @@ mod problem_35 {
         }
 
         #[test]
-        fn test_example_3() {
+        fn example_3() {
             let nums = vec![1, 3, 5, 6];
             let target = 7;
 
@@ -227,7 +227,7 @@ mod problem_35 {
         }
 
         #[test]
-        fn test_example_4() {
+        fn example_4() {
             let nums = vec![5];
             let target = 5;
 
@@ -238,7 +238,7 @@ mod problem_35 {
         }
 
         #[test]
-        fn test_example_5() {
+        fn example_5() {
             let nums = vec![5, 8, 10];
             let target = 4;
 
@@ -274,21 +274,21 @@ mod problem_217 {
     #[cfg(test)]
     mod tests {
         #[test]
-        fn test_example_1() {
+        fn example_1() {
             let input = vec![1,2,3,1];
 
             assert!(super::contains_duplicate(input));
         }
 
         #[test]
-        fn test_example_2() {
+        fn example_2() {
             let input = vec![1,2,3,4];
 
             assert!(!super::contains_duplicate(input));
         }
 
         #[test]
-        fn test_example_3() {
+        fn example_3() {
             let input = vec![1,1,1,3,3,4,3,2,4,2];
 
             assert!(super::contains_duplicate(input));
@@ -324,7 +324,7 @@ mod problem_977 {
     #[cfg(test)]
     mod tests {
         #[test]
-        fn test_example_1() {
+        fn example_1() {
             let nums = vec![-4,-1,0,3,10];
 
             let result = super::sorted_squares(nums);
@@ -334,7 +334,7 @@ mod problem_977 {
         }
 
         #[test]
-        fn test_example_2() {
+        fn example_2() {
             let nums = vec![-7,-3,2,3,11];
 
             let result = super::sorted_squares(nums);
@@ -344,7 +344,7 @@ mod problem_977 {
         }
 
         #[test]
-        fn test_example_3() {
+        fn example_3() {
             let nums = vec![0,3,10];
 
             let result = super::sorted_squares(nums);
@@ -354,13 +354,132 @@ mod problem_977 {
         }
 
         #[test]
-        fn test_example_4() {
+        fn example_4() {
             let nums = vec![-3,-2,-1,0];
 
             let result = super::sorted_squares(nums);
 
             let expected = vec![0,1,4,9];
             assert_eq!(result, expected);
+        }
+    }
+}
+
+mod problem_283 {
+    // Move Zeroes
+    // Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+    // Note that you must do this in-place without making a copy of the array.
+
+    fn move_zeros(nums: &mut Vec<i32>) {
+        let mut first_nonzero: usize = nums.len() - 1;
+        while 0 <= first_nonzero {
+            if nums[first_nonzero] != 0 {
+                first_nonzero -= 1;
+            }
+        }
+    }
+
+    fn walkback(nums: &mut Vec<i32>, start: usize, end: usize) {
+        let mut start = start;
+        while start < end {
+            let tmp = nums[start + 1];
+            nums[start + 1] = nums[start];
+            nums[start] = tmp;
+            start += 1;
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+
+        #[test]
+        fn walkback() {
+            let mut input = vec![1,2,3,4,5];
+
+            super::walkback(&mut input, 1, 3);
+
+            let expected = vec![1,3,4,2,5];
+            assert_eq!(input, expected);
+        }
+
+        #[ignore]
+        #[test]
+        fn example_1() {
+            let mut input = vec![0,1,0,3,12];
+
+            super::move_zeros(&mut input);
+
+            let expected = vec![1,3,12,0,0];
+            assert_eq!(input, expected);
+        }
+
+        #[ignore]
+        #[test]
+        fn example_2() {
+            let mut input = vec![0];
+
+            super::move_zeros(&mut input);
+
+            let expected = vec![0];
+            assert_eq!(input, expected);
+        }
+    }
+}
+
+mod problem_53 {
+    /* Maximum Subarray
+    Medium
+
+
+    Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+
+    A subarray is a contiguous part of an array.
+
+    Constraints:
+    1 <= nums.length <= 105
+    -104 <= nums[i] <= 104
+     */
+
+    use std::cmp::max;
+
+    pub fn max_sub_array(nums: Vec<i32>) -> i32 {
+        let mut max_sum = nums[0];
+        let mut sum = 0;
+        for n in nums.into_iter() {
+            if sum <= 0 { sum = 0 }
+            sum += n;
+            max_sum = max(max_sum, sum);
+        }
+        return max_sum as i32;
+    }
+
+    #[cfg(test)]
+    mod tests {
+        #[test]
+        fn example_1() {
+            let nums = vec![-2,1,-3,4,-1,2,1,-5,4];
+
+            let result = super::max_sub_array(nums);
+
+            assert_eq!(result, 6);
+        }
+
+        #[test]
+        fn example_2() {
+            let nums = vec![1];
+
+            let result = super::max_sub_array(nums);
+
+            assert_eq!(result, 1);
+        }
+
+        #[test]
+        fn example_3() {
+            let nums = vec![5,4,-1,7,8];
+
+            let result = super::max_sub_array(nums);
+
+            assert_eq!(result, 23);
         }
     }
 }
